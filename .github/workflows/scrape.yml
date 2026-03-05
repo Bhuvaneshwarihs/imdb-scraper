@@ -1,0 +1,34 @@
+name: Scrape IMDb
+
+on:
+  schedule:
+    - cron: "0 0 * * *"   # Runs daily at midnight UTC
+  workflow_dispatch:
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install httpx lxml cssselect
+
+      - name: Run scraper
+        run: python scrape.py
+
+      - name: Commit results
+        run: |
+          git config --local user.email "bot@github.com"
+          git config --local user.name "github-actions"
+          git add *.json
+          git commit -m "Update IMDb data" || echo "No changes"
+          git push
