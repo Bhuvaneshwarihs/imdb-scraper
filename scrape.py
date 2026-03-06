@@ -1,7 +1,6 @@
+import requests
 import json
-import httpx
-import time
-from datetime import datetime, UTC
+from datetime import datetime
 from lxml import html
 
 url = "https://www.imdb.com/chart/top/"
@@ -11,23 +10,9 @@ headers = {
     "Accept-Language": "en-US,en;q=0.9"
 }
 
-response = None
+response = requests.get(url, headers=headers, timeout=60)
 
-# retry logic
-for attempt in range(5):
-    try:
-        print(f"Attempt {attempt+1}...")
-        response = httpx.get(url, headers=headers, timeout=60)
-        if response.status_code == 200:
-            break
-    except httpx.ReadTimeout:
-        print("Timeout... retrying")
-        time.sleep(5)
-
-if response is None:
-    raise Exception("Failed to fetch IMDb page")
-
-tree = html.fromstring(response.text)
+tree = html.fromstring(response.content)
 
 movies = []
 
@@ -40,8 +25,7 @@ for item in tree.cssselect(".ipc-metadata-list-summary-item"):
         "rating": rating
     })
 
-now = datetime.now(UTC)
-filename = f"imdb_{now.strftime('%Y-%m-%d')}.json"
+filename = f"imdb_{datetime.now().strftime('%Y-%m-%d')}.json"
 
 with open(filename, "w") as f:
     json.dump(movies, f, indent=2)
