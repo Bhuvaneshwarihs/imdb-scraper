@@ -29,6 +29,6 @@ jobs:
         run: |
           git config --local user.email "bot@github.com"
           git config --local user.name "github-actions"
-          git add *.json
+          git add -f *.json
           git commit -m "Update IMDb data" || echo "No changes"
           git push
