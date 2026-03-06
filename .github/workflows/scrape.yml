@@ -32,3 +32,4 @@ jobs:
           git add -f *.json
           git commit -m "Update IMDb data" || echo "No changes"
           git push
+
