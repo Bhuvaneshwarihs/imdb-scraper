@@ -1,1 +1,3 @@
 venv/
+*.json
+!imdb_*.json
