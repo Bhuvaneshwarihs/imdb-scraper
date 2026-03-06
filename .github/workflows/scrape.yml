@@ -22,14 +22,13 @@ jobs:
         run: |
           pip install requests lxml cssselect
 
-     - name: Run scraper
+      - name: Run scraper
         run: python scrape.py
 
       - name: Commit results
         run: |
           git config --local user.email "bot@github.com"
           git config --local user.name "github-actions"
-          git add -f *.json
+          git add -f imdb_*.json
           git commit -m "Update IMDb data" || echo "No changes"
           git push
-
